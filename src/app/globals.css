@@ -1,26 +1,157 @@
 @import "tailwindcss";
 
+/* ── tokens ──────────────────────────────────────────────────────────
+   Warm off-white on near-black. Never #fff on #000 — the warmth is
+   what keeps this from reading as a default dark theme.
+   ------------------------------------------------------------------ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ground: #0b0b0c;
+  --raised: #121214;
+  --ink: #edeae4;
+  --ink-dim: #8a8a85;
+  --rule: #24242a;
+  --accent: #e0a458;
+
+  --shell: 1180px;
+  --gutter: 24px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ground: var(--ground);
+  --color-raised: var(--raised);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* header is sticky; keep anchor targets clear of it */
+    scroll-padding-top: 96px;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--ground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Only reachable by keyboard — never steals a mouse focus ring */
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* mono chrome: nav, labels, chips, dates */
+  .chrome {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hairline {
+    border-top: 1px solid var(--rule);
+  }
+}
+
+/* ── motion ──────────────────────────────────────────────────────────
+   Everything animated must survive this being on. The typed hero
+   freezes on its first phrase, the skill cluster goes static.
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── keyframes ───────────────────────────────────────────────────────
+   Both start and end at the visible state, so if the reduced-motion
+   override collapses the duration the element does not freeze hidden.
+   ------------------------------------------------------------------ */
+@keyframes caret {
+  0%, 100% { opacity: 1; }
+  45%, 55% { opacity: 0; }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@layer utilities {
+  .animate-caret {
+    animation: caret 1.05s steps(1, end) infinite;
+  }
+  .animate-rise {
+    animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* ── skill cluster ───────────────────────────────────────────────────
+   Hover/active styling is pure CSS off a --brand custom property set
+   per node, so 30 nodes cost 30 inline properties and zero extra
+   stylesheets or re-renders.
+   ------------------------------------------------------------------ */
+.skill-mark {
+  fill: var(--ink-dim);
+  transition: fill 300ms ease;
+}
+
+.skill-node:hover .skill-mark,
+.skill-node:focus-visible .skill-mark,
+.skill-node[data-active] .skill-mark {
+  fill: var(--brand);
+}
+
+.skill-node:hover .skill-tile,
+.skill-node:focus-visible .skill-tile {
+  transform: scale(1.12);
+  border-color: var(--ink-dim);
+}
+
+.skill-node[data-active] .skill-tile {
+  transform: scale(1.12);
+  border-color: var(--accent);
+  background-color: var(--raised);
+}
+
+.skill-node:hover .skill-label,
+.skill-node:focus-visible .skill-label,
+.skill-node[data-active] .skill-label {
+  opacity: 1;
 }
