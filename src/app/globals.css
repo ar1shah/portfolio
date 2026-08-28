@@ -32,8 +32,9 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* header is sticky; keep anchor targets clear of it */
-    scroll-padding-top: 96px;
+    /* Anchor offset lives on the sections as `scroll-mt-28` (112px), NOT
+       here. Setting both stacks them — the target lands at the sum, and
+       the nav underline then activates a section too early. */
   }
 
   body {

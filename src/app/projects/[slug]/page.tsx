@@ -53,7 +53,7 @@ export default async function ProjectPage({
   return (
     <article className="shell py-14 sm:py-20">
       <Link
-        href="/#work"
+        href="/#projects"
         className="font-mono text-[12px] text-ink-dim hover:text-ink transition-colors duration-200"
       >
         ← All work

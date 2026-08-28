@@ -3,7 +3,7 @@ import { SectionLabel } from "@/components/site/SectionLabel";
 
 export function Timeline() {
   return (
-    <section id="experience" className="shell scroll-mt-24 py-20">
+    <section id="experience" className="shell scroll-mt-28 py-20">
       <SectionLabel index="02">experience</SectionLabel>
 
       <ol className="mt-12">

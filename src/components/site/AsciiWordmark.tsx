@@ -1,18 +1,25 @@
 import { profile } from "@/content/profile";
 
 /**
- * Half-block wordmark for ar13.dev. Two rows so it can sit inside a header
- * without becoming a banner — the tradeoff is that it needs the glyphs to
- * land on an exact monospace grid, hence the fixed line-height and the
- * per-glyph padding baked into the strings below.
+ * figlet "slant" rendering of ar13.dev. Five rows, every one exactly 38
+ * columns, so the block is a clean rectangle and positions predictably.
  *
- * Rows are equal width (28 cols). If you edit one, edit both.
+ * Written as plain double-quoted strings with `\` doubled — deliberately
+ * NOT String.raw. Row 3 contains a backtick, and escaping a backtick inside
+ * a raw template leaves the backslash in the output, which would corrupt
+ * the art. Trailing spaces are load-bearing: they keep all five rows the
+ * same width.
  */
-const ROW_TOP = "▄▀█ █▀█ ▄█ ▀▀█   █▀▄ █▀▀ █░█";
-const ROW_BOTTOM = "█▀█ █▀▄ ░█ ▄▄█ ▄ █▄▀ ██▄ ▀▄▀";
+const ART = [
+  "             ________      __         ",
+  "  ____ _____<  /__  / ____/ /__ _   __",
+  " / __ `/ ___/ / /_ < / __  / _ \\ | / /",
+  "/ /_/ / /  / /___/ // /_/ /  __/ |/ / ",
+  "\\__,_/_/  /_//____(_)__,_/\\___/|___/  ",
+].join("\n");
 
 type Props = {
-  /** header: tiny and crisp. footer: the same mark, given room to breathe. */
+  /** header: small and crisp. footer: the same mark, given room. */
   variant?: "header" | "footer";
   className?: string;
 };
@@ -26,16 +33,15 @@ export function AsciiWordmark({ variant = "header", className = "" }: Props) {
         aria-hidden
         className={
           isHeader
-            ? "hidden sm:block font-mono leading-[1.05] text-[9px] tracking-[0.02em] whitespace-pre text-ink"
-            : "block font-mono leading-[1.05] text-[11px] sm:text-[15px] md:text-[18px] tracking-[0.02em] whitespace-pre text-ink-dim"
+            ? // 38ch * 0.6em advance * 8.5px = ~194px wide, 5 rows = ~43px tall
+              "hidden sm:block font-mono text-[8.5px] leading-[1] whitespace-pre text-ink"
+            : "block font-mono text-[11px] sm:text-[14px] md:text-[16px] leading-[1] whitespace-pre text-ink-dim"
         }
       >
-        {ROW_TOP}
-        {"\n"}
-        {ROW_BOTTOM}
+        {ART}
       </span>
 
-      {/* Below sm the blocks get illegible, so the header falls back to type. */}
+      {/* Below sm the strokes collapse into mush, so the header uses type. */}
       {isHeader && (
         <span
           aria-hidden

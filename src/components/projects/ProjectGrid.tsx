@@ -6,8 +6,8 @@ import { profile } from "@/content/profile";
 
 export function ProjectGrid() {
   return (
-    <section id="work" className="shell scroll-mt-24 py-20">
-      <SectionLabel index="01">selected work</SectionLabel>
+    <section id="projects" className="shell scroll-mt-28 py-20">
+      <SectionLabel index="01">projects</SectionLabel>
 
       <div className="mt-12 grid gap-x-12 gap-y-2 md:grid-cols-2">
         {projects.map((p, i) => (

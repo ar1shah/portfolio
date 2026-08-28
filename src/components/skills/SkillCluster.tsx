@@ -86,9 +86,21 @@ const LAYOUT = buildLayout();
 // Repulsion radius and strength, in px.
 const RADIUS = 165;
 const STRENGTH = 52;
-// Critically-ish damped spring.
+
+/**
+ * Spring constants, tuned per step at 60Hz. They are only meaningful
+ * alongside FIXED_DT — stepping them once per rendered frame instead makes
+ * the springs stiffer on high-refresh displays.
+ */
 const STIFFNESS = 0.11;
 const DAMPING = 0.84;
+
+/** Physics runs on this fixed step regardless of the display's refresh rate. */
+const FIXED_DT = 1 / 60;
+/** Ceiling on catch-up steps, so a backgrounded tab cannot spiral. */
+const MAX_STEPS = 4;
+/** Largest frame delta to honour. */
+const MAX_DT = 0.05;
 
 export function SkillCluster() {
   const reduced = usePrefersReducedMotion();
@@ -128,6 +140,8 @@ export function SkillCluster() {
 
     let raf = 0;
     let rect = el.getBoundingClientRect();
+    let last = performance.now();
+    let acc = 0;
 
     const onPointerMove = (e: PointerEvent) => {
       pointer.current = { x: e.clientX, y: e.clientY, on: true };
@@ -148,6 +162,11 @@ export function SkillCluster() {
     const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
 
+      // Advance the clock before any early return, or skipped time piles up
+      // and the cluster snaps when it comes back into view.
+      const dt = Math.min(MAX_DT, (now - last) / 1000);
+      last = now;
+
       // Hidden below the sm breakpoint — skip the work entirely.
       if (el.offsetParent === null) return;
 
@@ -155,6 +174,17 @@ export function SkillCluster() {
 
       // Off-screen: keep the loop alive but do nothing expensive.
       if (rect.bottom < -200 || rect.top > window.innerHeight + 200) return;
+
+      // Drain the accumulator into whole 60Hz steps. At 120Hz this is 1
+      // step every other frame rather than 1 per frame, which is what keeps
+      // the motion identical across displays.
+      acc += dt;
+      let steps = 0;
+      while (acc >= FIXED_DT && steps < MAX_STEPS) {
+        acc -= FIXED_DT;
+        steps++;
+      }
+      if (steps === 0) return;
 
       const t = now / 1000;
       const p = pointer.current;
@@ -190,10 +220,12 @@ export function SkillCluster() {
         const targetX = idleX + repelX;
         const targetY = idleY + repelY;
 
-        m.vx = (m.vx + (targetX - m.ox) * STIFFNESS) * DAMPING;
-        m.vy = (m.vy + (targetY - m.oy) * STIFFNESS) * DAMPING;
-        m.ox += m.vx;
-        m.oy += m.vy;
+        for (let s = 0; s < steps; s++) {
+          m.vx = (m.vx + (targetX - m.ox) * STIFFNESS) * DAMPING;
+          m.vy = (m.vy + (targetY - m.oy) * STIFFNESS) * DAMPING;
+          m.ox += m.vx;
+          m.oy += m.vy;
+        }
 
         node.style.transform = `translate3d(${m.ox.toFixed(2)}px, ${m.oy.toFixed(2)}px, 0)`;
       }
@@ -214,8 +246,8 @@ export function SkillCluster() {
   }, []);
 
   return (
-    <section id="stack" className="shell scroll-mt-24 py-20">
-      <SectionLabel index="03">stack</SectionLabel>
+    <section id="skills" className="shell scroll-mt-28 py-20">
+      <SectionLabel index="03">skills</SectionLabel>
 
       <p className="mt-8 max-w-[34rem] text-[0.95rem] leading-[1.7] text-ink-dim">
         Thirty-odd things I have actually shipped with. Hover to name one, click

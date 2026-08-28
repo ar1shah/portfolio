@@ -1,29 +1,7 @@
 import { profile } from "@/content/profile";
 import { TypedRoles } from "./TypedRoles";
-import { PhotoFrame } from "./PhotoFrame";
+import { AsciiGlobe } from "./AsciiGlobe";
 import { ExternalLink } from "@/components/ui/ExternalLink";
-
-/**
- * Splits the intro around its accent phrase so that phrase can be set in
- * Instrument Serif italic. If the phrase is not found the paragraph renders
- * unchanged rather than breaking.
- */
-function IntroText() {
-  const { intro, introAccent } = profile;
-  const at = intro.indexOf(introAccent);
-
-  if (at === -1) return <>{intro}</>;
-
-  return (
-    <>
-      {intro.slice(0, at)}
-      <em className="font-serif italic text-ink">
-        {introAccent}
-      </em>
-      {intro.slice(at + introAccent.length)}
-    </>
-  );
-}
 
 function ArrowLink({
   href,
@@ -46,7 +24,7 @@ function ArrowLink({
     </>
   );
   const cls =
-    "group inline-flex items-center gap-2 font-mono text-[13px] text-ink-dim hover:text-ink transition-colors duration-200";
+    "group inline-flex items-center gap-2 border border-rule px-4 py-2.5 font-mono text-[13px] text-ink-dim transition-colors duration-200 hover:border-ink-dim hover:text-ink";
 
   return external ? (
     <ExternalLink href={href} className={cls}>
@@ -61,8 +39,8 @@ function ArrowLink({
 
 export function Hero() {
   return (
-    <section className="shell pt-16 pb-24 sm:pt-24 sm:pb-32">
-      <div className="grid gap-14 md:grid-cols-[minmax(0,1fr)_auto] md:gap-20 md:items-start">
+    <section id="about" className="shell scroll-mt-28 pt-14 pb-20 sm:pt-20 sm:pb-24">
+      <div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)] md:gap-16 md:items-center">
         <div className="max-w-[36rem]">
           <p className="chrome text-ink-dim mb-6">
             {profile.location} · Available May 2027
@@ -79,22 +57,16 @@ export function Hero() {
             </span>
           </p>
 
-          <p className="mt-8 text-[1.0625rem] leading-[1.7] text-ink-dim">
-            <IntroText />
-          </p>
-
-          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+          <div className="mt-10 flex flex-wrap items-center gap-4">
             <ArrowLink href={profile.links.resume}>Résumé</ArrowLink>
-            <ArrowLink href={`mailto:${profile.email}`}>Email</ArrowLink>
             <ArrowLink href={profile.links.github} external>
               GitHub
             </ArrowLink>
           </div>
         </div>
 
-        <div className="md:pt-4 md:justify-self-end">
-          <PhotoFrame />
-        </div>
+        {/* Decorative. The page reads identically without it. */}
+        <AsciiGlobe className="mx-auto w-full max-w-[420px]" />
       </div>
     </section>
   );

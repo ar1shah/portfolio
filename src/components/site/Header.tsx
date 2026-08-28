@@ -3,17 +3,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AsciiWordmark } from "./AsciiWordmark";
-
-const NAV = [
-  { href: "/#work", label: "work" },
-  { href: "/#experience", label: "experience" },
-  { href: "/#stack", label: "stack" },
-];
+import { MobileMenu } from "./MobileMenu";
+import { NAV, NAV_IDS } from "./nav";
+import { useActiveSection } from "@/hooks/useActiveSection";
 
 export function Header() {
   // The rule is absent at rest and appears once the page moves. A border
   // that is always there reads as a toolbar; this reads as the page.
   const [scrolled, setScrolled] = useState(false);
+  const active = useActiveSection(NAV_IDS);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -28,7 +26,7 @@ export function Header() {
         scrolled ? "border-rule" : "border-transparent"
       }`}
     >
-      <div className="shell flex items-center justify-between h-16">
+      <div className="shell flex items-center justify-between h-20">
         <Link
           href="/"
           className="shrink-0 hover:opacity-70 transition-opacity duration-200"
@@ -36,20 +34,34 @@ export function Header() {
           <AsciiWordmark variant="header" />
         </Link>
 
-        <nav aria-label="Primary">
-          <ul className="flex items-center gap-6 sm:gap-8">
-            {NAV.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="chrome text-ink-dim hover:text-ink transition-colors duration-200"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+        <nav aria-label="Primary" className="hidden sm:block">
+          <ul className="flex items-center gap-6 md:gap-8">
+            {NAV.map((item) => {
+              const isActive = active === item.id;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={isActive ? "true" : undefined}
+                    className={`chrome relative block py-1 transition-colors duration-200 ${
+                      isActive ? "text-ink" : "text-ink-dim hover:text-ink"
+                    }`}
+                  >
+                    {item.label}
+                    <span
+                      aria-hidden
+                      className={`absolute -bottom-0.5 left-0 h-px bg-accent transition-[width] duration-300 ease-out ${
+                        isActive ? "w-full" : "w-0"
+                      }`}
+                    />
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
+
+        <MobileMenu items={NAV} />
       </div>
     </header>
   );
