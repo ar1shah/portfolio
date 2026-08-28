@@ -1,13 +1,11 @@
 "use client";
 
 import { useTypedText } from "@/hooks/useTypedText";
+import { Caret } from "@/components/ui/Caret";
 
 type Props = {
   phrases: readonly string[];
 };
-
-const CARET_CLASS =
-  "ml-[2px] inline-block w-[0.52em] h-[0.92em] translate-y-[0.12em]";
 
 export function TypedRoles({ phrases }: Props) {
   const list = phrases as string[];
@@ -26,7 +24,7 @@ export function TypedRoles({ phrases }: Props) {
         className="col-start-1 row-start-1 invisible whitespace-pre"
       >
         {longest}
-        <span className={CARET_CLASS} />
+        <Caret blink={false} />
       </span>
 
       <span className="col-start-1 row-start-1 whitespace-pre">
@@ -34,10 +32,7 @@ export function TypedRoles({ phrases }: Props) {
             stream of updates. The first role is the canonical one. */}
         <span className="sr-only">{list[0]}</span>
         <span aria-hidden>{text}</span>
-        <span
-          aria-hidden
-          className={`${CARET_CLASS} bg-accent ${reduced ? "" : "animate-caret"}`}
-        />
+        <Caret blink={!reduced} />
       </span>
     </span>
   );

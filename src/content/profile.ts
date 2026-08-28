@@ -20,9 +20,12 @@ export const profile = {
     "clipboard, or repeated complaint.",
   ].join(" "),
 
-  // Rendered in Instrument Serif italic — the one typographic accent
+  // Rendered in amber inside the terminal panel — the one accent phrase
   // on the page. Keep it to a couple of words.
   introAccent: "actually open",
+
+  // The command the terminal types before printing `intro`. Chrome, not copy.
+  introCommand: "cat about.txt",
 
   location: "Orlando, FL",
 

@@ -91,35 +91,31 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: Props) {
     >
       <div
         ref={panelRef}
-        className="relative w-full max-w-[440px] animate-rise"
+        className="relative w-full max-w-[440px] border border-rule bg-raised animate-rise"
       >
-        <button
-          ref={closeRef}
-          type="button"
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute -top-12 right-0 flex h-9 w-9 items-center justify-center border border-rule text-ink-dim transition-colors duration-200 hover:border-accent hover:text-accent"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path
-              d="M18 6 6 18M6 6l12 12"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        <div className="flex items-center justify-between border-b border-rule px-3 py-2">
+          <span className="chrome text-ink-dim">~/photos</span>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="chrome text-ink-dim transition-colors duration-200 hover:text-accent"
+          >
+            [esc]
+          </button>
+        </div>
 
-        <div className="relative border border-rule bg-raised">
+        <div className="relative aspect-[4/5] overflow-hidden">
           <Image
             key={photo.src}
             src={photo.src}
             alt={photo.alt}
-            width={880}
-            height={1100}
+            fill
             priority
-            className="w-full h-auto"
+            className="object-cover"
           />
+          <span aria-hidden className="scanlines pointer-events-none absolute inset-0" />
 
           {many && (
             <>
@@ -127,31 +123,29 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: Props) {
                 type="button"
                 onClick={() => go(-1)}
                 aria-label="Previous photo"
-                className="absolute left-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center border border-rule bg-ground/80 text-ink-dim transition-colors duration-200 hover:border-accent hover:text-accent"
+                className="absolute left-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center border border-rule bg-ground/80 font-mono text-[14px] text-ink-dim transition-colors duration-200 hover:border-accent hover:text-accent"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M15 18 9 12l6-6" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                &lt;
               </button>
               <button
                 type="button"
                 onClick={() => go(1)}
                 aria-label="Next photo"
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center border border-rule bg-ground/80 text-ink-dim transition-colors duration-200 hover:border-accent hover:text-accent"
+                className="absolute right-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center border border-rule bg-ground/80 font-mono text-[14px] text-ink-dim transition-colors duration-200 hover:border-accent hover:text-accent"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="m9 18 6-6-6-6" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                &gt;
               </button>
             </>
           )}
         </div>
 
-        <div className="mt-4 flex items-center justify-between gap-4">
-          <p className="font-mono text-[12px] text-ink">{photo.caption}</p>
+        <div className="flex items-center justify-between gap-4 border-t border-rule px-3 py-2">
+          <p className="font-mono text-[12px] text-ink">
+            <span className="text-ink-dim">#</span> {photo.caption}
+          </p>
           {many && (
             <p className="chrome text-ink-dim shrink-0" aria-live="polite">
-              {index + 1} / {photos.length}
+              {String(index + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
             </p>
           )}
         </div>

@@ -14,6 +14,12 @@
 
   --shell: 1180px;
   --gutter: 24px;
+
+  /* Terminal window-control dots — desaturated so the classic red/yellow/
+     green reads as "terminal" without clashing with the warm palette. */
+  --dot-red: #b8574a;
+  --dot-yellow: #d0a24e;
+  --dot-green: #6a9c6a;
 }
 
 @theme inline {
@@ -120,6 +126,15 @@
   }
   .animate-rise {
     animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Static — no animation, so reduced motion is a non-issue. */
+  .scanlines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 2px,
+      rgba(0, 0, 0, 0.18) 2px 3px
+    );
   }
 }
 
