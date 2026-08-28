@@ -43,7 +43,7 @@ export function PhotoFrame() {
         }}
         aria-haspopup="dialog"
         aria-label={`Open photos — ${photos.length} images`}
-        className="group relative block w-full max-w-[300px] border border-rule bg-raised transition-[transform,border-color] duration-300 hover:scale-[1.01] hover:border-accent"
+        className="group relative block w-full max-w-[420px] overflow-hidden rounded-lg border border-rule bg-raised transition-[transform,border-color] duration-300 hover:scale-[1.01] hover:border-accent"
       >
         <div className="flex items-center justify-between border-b border-rule px-3 py-2 transition-colors duration-300 group-hover:border-accent">
           <span className="chrome text-ink-dim">~/photos</span>
@@ -59,7 +59,7 @@ export function PhotoFrame() {
               alt={cover.alt}
               fill
               priority
-              sizes="(max-width: 768px) 60vw, 300px"
+              sizes="(max-width: 768px) 60vw, 420px"
               className="object-cover"
             />
             <span aria-hidden className="scanlines pointer-events-none absolute inset-0" />

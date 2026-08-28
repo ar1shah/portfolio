@@ -11,18 +11,18 @@ export type Photo = {
  */
 export const photos: Photo[] = [
   {
-    src: "/photos/placeholder-01.svg",
-    alt: "Portrait of Ari Shah",
-    caption: "me :)",
+    src: "/photos/kitchen-laptop.png",
+    alt: "Ari Shah working on a laptop at a kitchen table at night",
+    caption: "late night shipping",
   },
   {
-    src: "/photos/placeholder-02.svg",
-    alt: "Placeholder",
-    caption: "replace me",
+    src: "/photos/margarita.png",
+    alt: "Ari Shah holding a margarita outdoors at dusk",
+    caption: "off the clock",
   },
   {
-    src: "/photos/placeholder-03.svg",
-    alt: "Placeholder",
-    caption: "replace me",
+    src: "/photos/chihuahua.png",
+    alt: "A small chihuahua resting on a pillow",
+    caption: "thats my dawg",
   },
 ];

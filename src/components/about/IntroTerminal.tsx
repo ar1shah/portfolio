@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { profile } from "@/content/profile";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useInView } from "@/hooks/useInView";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useTypedLines } from "@/hooks/useTypedLines";
 import { Caret } from "@/components/ui/Caret";
 import { wrapToColumns, revealSegments, type Segment } from "./wrap";
@@ -11,26 +12,37 @@ import { wrapToColumns, revealSegments, type Segment } from "./wrap";
 /** JetBrains Mono em advance — same technique as AsciiGlobe's grid sizing. */
 const ADVANCE = 0.6;
 
-// A single column count, sized to fit even a ~320px phone at the clamp's
-// 11px floor. Tried a wider/narrower pair keyed off a viewport breakpoint
-// instead, but the panel's real width doesn't track viewport width — it's
-// squeezed by the photo panel beside it — so a viewport-based guess
-// overflowed the panel at plenty of real widths. A fixed, conservative
-// count plus the font-size clamp below is what actually can't overflow.
+// Below `lg` the panel is full-width and stacked above the photo — a
+// fixed, conservative count that's safe even at a ~320px phone at the
+// clamp's 11px floor. Tried tracking the real viewport instead, but a
+// flexible grid track that shrinks to fit its sibling doesn't correlate
+// to a single width per breakpoint, so a static guess either overflowed
+// narrow layouts or left the wide one short.
 //
-// Widening the box alone (without raising this) leaves the 14px cap's
-// text sitting in its old narrow column with empty space to its right —
-// the font-size clamp doesn't grow to fill extra room, only shrink to
-// avoid overflow. Raising COLS is what makes the wider box's fixed-size
-// text actually reach edge to edge, wrapping into fewer, longer lines.
-const COLS = 40;
+// At `lg` and up, the two-column layout doesn't kick in until 1024px,
+// where the fixed-width photo column plus the gap leaves the terminal
+// at least ~460px of real content width — a known worst case, not a
+// squeeze that varies with the sibling. COLS_DESKTOP is picked to
+// reach the 14px cap at that width, so the text reaches edge to edge
+// on typical desktop windows instead of sitting in a narrow column
+// with empty space to its right — the font-size clamp only ever
+// shrinks to avoid overflow, it doesn't grow on its own to fill a
+// wider box. AboutBlock also gives the terminal's grid track a 340px
+// floor as a defensive backstop (extreme zoom, odd scrollbar widths) —
+// that floor should never actually engage at 1024px+.
+const COLS_MOBILE = 40;
+const COLS_DESKTOP = 52;
+
+/** Trailing blank rows so the panel has breathing room at the bottom
+ * without the font-size clamp reading them as more text to fit. */
+const TRAILING_BLANK_LINES = 1;
 
 function WindowDots() {
   return (
     <span aria-hidden className="inline-flex items-center gap-[4px]">
-      <span className="h-[7px] w-[7px] rounded-full" style={{ background: "var(--dot-red)" }} />
-      <span className="h-[7px] w-[7px] rounded-full" style={{ background: "var(--dot-yellow)" }} />
-      <span className="h-[7px] w-[7px] rounded-full" style={{ background: "var(--dot-green)" }} />
+      <span className="h-[9px] w-[9px] rounded-full" style={{ background: "var(--dot-red)" }} />
+      <span className="h-[9px] w-[9px] rounded-full" style={{ background: "var(--dot-yellow)" }} />
+      <span className="h-[9px] w-[9px] rounded-full" style={{ background: "var(--dot-green)" }} />
     </span>
   );
 }
@@ -65,9 +77,21 @@ export function IntroTerminal() {
   const [inViewRef, inView] = useInView<HTMLDivElement>();
   const visible = reduced || inView;
 
+  // Matches AboutBlock's `lg:` breakpoint, where the terminal moves into
+  // the two-column layout described above COLS_DESKTOP.
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const cols = isDesktop ? COLS_DESKTOP : COLS_MOBILE;
+
   const outputLines = useMemo(
-    () => wrapToColumns(profile.intro, COLS, profile.introAccent),
-    [],
+    () =>
+      profile.introParagraphs.flatMap((paragraph, i) => {
+        const wrapped = wrapToColumns(paragraph, cols, profile.introAccent);
+        // A truly empty line collapses to zero height (an empty block has
+        // no inline content to establish a line box) — a non-breaking
+        // space keeps the paragraph gap visible.
+        return i === 0 ? wrapped : [" ", ...wrapped];
+      }),
+    [cols],
   );
 
   const lines = useMemo(
@@ -92,7 +116,7 @@ export function IntroTerminal() {
       }`}
     >
       {/* Accessible + crawlable copy. Everything below is aria-hidden. */}
-      <p className="sr-only">{profile.intro}</p>
+      <p className="sr-only">{profile.introParagraphs.join(" ")}</p>
 
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-rule bg-raised px-3 py-1.5">
         <WindowDots />
@@ -119,7 +143,7 @@ export function IntroTerminal() {
           <div
             className="grid"
             style={{
-              fontSize: `clamp(11px, calc(100cqw / ${COLS * ADVANCE}), 14px)`,
+              fontSize: `clamp(11px, calc(100cqw / ${cols * ADVANCE}), 14px)`,
               lineHeight: 1.35,
             }}
           >
@@ -132,6 +156,9 @@ export function IntroTerminal() {
               </div>
               {outputLines.map((l, i) => (
                 <Row key={i} segments={revealSegments(l, profile.introAccent)} />
+              ))}
+              {Array.from({ length: TRAILING_BLANK_LINES }).map((_, i) => (
+                <div key={`blank-${i}`}>&nbsp;</div>
               ))}
             </div>
 
@@ -160,6 +187,10 @@ export function IntroTerminal() {
                   />
                 );
               })}
+              {done &&
+                Array.from({ length: TRAILING_BLANK_LINES }).map((_, i) => (
+                  <div key={`blank-${i}`}>&nbsp;</div>
+                ))}
             </div>
           </div>
         )}

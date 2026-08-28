@@ -13,16 +13,17 @@ export const profile = {
   ],
 
   // The em-dash-free, first-person version. No "passionate about
-  // crafting". Say the thing plainly.
-  intro: [
-    "I'm a CS student at UCF who builds software that people actually open on a",
-    "Tuesday morning. Most of what I've shipped started as someone's spreadsheet,",
-    "clipboard, or repeated complaint.",
-  ].join(" "),
+  // crafting". Say the thing plainly. Each entry is its own paragraph —
+  // the terminal prints a blank line between them.
+  introParagraphs: [
+    "hi!",
+    "I'm a software engineer and Computer Science student at the University of Central Florida, focused on building tools that solve real problems.",
+    "When I'm not programming, you'll probably find me traveling the world, cooking a new recipe, or training MMA.",
+  ],
 
   // Rendered in amber inside the terminal panel — the one accent phrase
   // on the page. Keep it to a couple of words.
-  introAccent: "actually open",
+  introAccent: "solve real problems",
 
   // The command the terminal types before printing `intro`. Chrome, not copy.
   introCommand: "cat about.txt",

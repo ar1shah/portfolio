@@ -31,11 +31,18 @@ function tokenizeWithAtomic(text: string, atomic: string): string[] {
   if (at === -1) return text.split(" ");
 
   const before = text.slice(0, at).trimEnd();
-  const after = text.slice(at + atomic.length).trimStart();
+  const afterRaw = text.slice(at + atomic.length);
+
+  // Punctuation glued directly onto the phrase (no space, e.g. a
+  // trailing period) has to stay glued in the wrapped output too —
+  // otherwise the space-joined word list below would insert a space
+  // that was never in the source text.
+  const glued = afterRaw.match(/^\S+/)?.[0] ?? "";
+  const after = afterRaw.slice(glued.length).trimStart();
 
   return [
     ...(before ? before.split(" ") : []),
-    atomic,
+    atomic + glued,
     ...(after ? after.split(" ") : []),
   ];
 }
