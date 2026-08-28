@@ -24,7 +24,7 @@ export default function OpengraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <div style={{ width: 14, height: 40, background: "#e0a458" }} />
+          <div style={{ width: 14, height: 40, background: "#0e9c6f" }} />
           <div
             style={{
               fontSize: 26,

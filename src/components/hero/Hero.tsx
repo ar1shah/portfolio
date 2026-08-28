@@ -42,9 +42,7 @@ export function Hero() {
     <section id="about" className="shell scroll-mt-28 pt-14 pb-20 sm:pt-20 sm:pb-24">
       <div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)] md:gap-16 md:items-center">
         <div className="max-w-[36rem]">
-          <p className="chrome text-ink-dim mb-6">
-            {profile.location} · Available May 2027
-          </p>
+          <p className="chrome text-ink-dim mb-6">{profile.location}</p>
 
           <h1 className="font-sans font-medium tracking-[-0.035em] leading-[0.95] text-[clamp(3rem,9vw,5.25rem)]">
             {profile.name}

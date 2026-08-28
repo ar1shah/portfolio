@@ -17,14 +17,20 @@ const ADVANCE = 0.6;
 // squeezed by the photo panel beside it — so a viewport-based guess
 // overflowed the panel at plenty of real widths. A fixed, conservative
 // count plus the font-size clamp below is what actually can't overflow.
-const COLS = 34;
+//
+// Widening the box alone (without raising this) leaves the 14px cap's
+// text sitting in its old narrow column with empty space to its right —
+// the font-size clamp doesn't grow to fill extra room, only shrink to
+// avoid overflow. Raising COLS is what makes the wider box's fixed-size
+// text actually reach edge to edge, wrapping into fewer, longer lines.
+const COLS = 40;
 
 function WindowDots() {
   return (
-    <span aria-hidden className="inline-flex items-center gap-[6px]">
-      <span className="h-[10px] w-[10px] rounded-full" style={{ background: "var(--dot-red)" }} />
-      <span className="h-[10px] w-[10px] rounded-full" style={{ background: "var(--dot-yellow)" }} />
-      <span className="h-[10px] w-[10px] rounded-full" style={{ background: "var(--dot-green)" }} />
+    <span aria-hidden className="inline-flex items-center gap-[4px]">
+      <span className="h-[7px] w-[7px] rounded-full" style={{ background: "var(--dot-red)" }} />
+      <span className="h-[7px] w-[7px] rounded-full" style={{ background: "var(--dot-yellow)" }} />
+      <span className="h-[7px] w-[7px] rounded-full" style={{ background: "var(--dot-green)" }} />
     </span>
   );
 }
@@ -88,7 +94,7 @@ export function IntroTerminal() {
       {/* Accessible + crawlable copy. Everything below is aria-hidden. */}
       <p className="sr-only">{profile.intro}</p>
 
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-rule bg-raised px-4 py-2.5">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-rule bg-raised px-3 py-1.5">
         <WindowDots />
         <span className="chrome justify-self-center text-ink-dim">
           ari@ar13dev:~/about
@@ -106,7 +112,7 @@ export function IntroTerminal() {
           past the panel's actual width. */}
       <div
         aria-hidden
-        className="bg-ground px-5 py-4 font-mono"
+        className="bg-ground px-4 py-2.5 font-mono"
         style={{ containerType: "inline-size" }}
       >
         {showBody && (
@@ -114,7 +120,7 @@ export function IntroTerminal() {
             className="grid"
             style={{
               fontSize: `clamp(11px, calc(100cqw / ${COLS * ADVANCE}), 14px)`,
-              lineHeight: 1.7,
+              lineHeight: 1.35,
             }}
           >
             {/* Invisible, full sizing copy in the same grid cell — reserves
