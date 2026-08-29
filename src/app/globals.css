@@ -91,7 +91,7 @@
 
 /* ── motion ──────────────────────────────────────────────────────────
    Everything animated must survive this being on. The typed hero
-   freezes on its first phrase, the skill cluster goes static.
+   freezes on its first phrase.
    ------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -136,38 +136,4 @@
       rgba(0, 0, 0, 0.18) 2px 3px
     );
   }
-}
-
-/* ── skill cluster ───────────────────────────────────────────────────
-   Hover/active styling is pure CSS off a --brand custom property set
-   per node, so 30 nodes cost 30 inline properties and zero extra
-   stylesheets or re-renders.
-   ------------------------------------------------------------------ */
-.skill-mark {
-  fill: var(--ink-dim);
-  transition: fill 300ms ease;
-}
-
-.skill-node:hover .skill-mark,
-.skill-node:focus-visible .skill-mark,
-.skill-node[data-active] .skill-mark {
-  fill: var(--brand);
-}
-
-.skill-node:hover .skill-tile,
-.skill-node:focus-visible .skill-tile {
-  transform: scale(1.12);
-  border-color: var(--ink-dim);
-}
-
-.skill-node[data-active] .skill-tile {
-  transform: scale(1.12);
-  border-color: var(--accent);
-  background-color: var(--raised);
-}
-
-.skill-node:hover .skill-label,
-.skill-node:focus-visible .skill-label,
-.skill-node[data-active] .skill-label {
-  opacity: 1;
 }

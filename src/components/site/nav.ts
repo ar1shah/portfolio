@@ -13,7 +13,6 @@ export const NAV: readonly NavItem[] = [
   { id: "about", href: "/#about", label: "about" },
   { id: "projects", href: "/#projects", label: "projects" },
   { id: "experience", href: "/#experience", label: "experience" },
-  { id: "skills", href: "/#skills", label: "skills" },
 ];
 
 export const NAV_IDS = NAV.map((n) => n.id);

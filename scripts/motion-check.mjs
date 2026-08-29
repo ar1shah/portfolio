@@ -1,8 +1,8 @@
 /**
- * Simulates the hero globe spin and the cluster spring at several refresh
- * rates and checks they land in the same place after the same wall-clock
- * time. Both were previously stepped per-frame, which made their speed a
- * function of the display.
+ * Simulates the hero globe spin at several refresh rates and checks it
+ * lands in the same place after the same wall-clock time. It was
+ * previously stepped per-frame, which made its speed a function of the
+ * display.
  *
  * Run: node scripts/motion-check.mjs
  */
@@ -35,57 +35,24 @@ function carAt(hz) {
   return { A: spinA + tiltA, B: spinB + tiltB };
 }
 
-// ── cluster: fixed-timestep spring ─────────────────────────────────────
-const STIFFNESS = 0.11;
-const DAMPING = 0.84;
-const FIXED_DT = 1 / 60;
-const MAX_STEPS = 4;
-
-function clusterAt(hz) {
-  const step = 1 / hz;
-  let ox = 0;
-  let vx = 0;
-  let acc = 0;
-  const target = 27; // a node held away from the cursor
-
-  for (let i = 0; i < hz * SECONDS; i++) {
-    acc += Math.min(MAX_DT, step);
-    let steps = 0;
-    while (acc >= FIXED_DT && steps < MAX_STEPS) {
-      acc -= FIXED_DT;
-      steps++;
-    }
-    for (let s = 0; s < steps; s++) {
-      vx = (vx + (target - ox) * STIFFNESS) * DAMPING;
-      ox += vx;
-    }
-  }
-  return ox;
-}
-
 console.log(`after ${SECONDS}s of wall-clock time:\n`);
-console.log("  Hz | globe spin| lean    | revs   | cluster offset");
+console.log("  Hz | globe spin| lean    | revs");
 const carAngles = [];
-const cluster = [];
 for (const hz of RATES) {
   const { A, B } = carAt(hz);
-  const c = clusterAt(hz);
   carAngles.push(A);
-  cluster.push(c);
   const revs = ((2 * Math.PI) / SPIN_A).toFixed(0);
   console.log(
-    `${String(hz).padStart(4)} | ${A.toFixed(4)}  | ${B.toFixed(4)}  | ${revs}s    | ${c.toFixed(4)}px`,
+    `${String(hz).padStart(4)} | ${A.toFixed(4)}  | ${B.toFixed(4)}  | ${revs}s`,
   );
 }
 
 const spread = (xs) => Math.max(...xs) - Math.min(...xs);
 const tSpread = spread(carAngles);
-const cSpread = spread(cluster);
 
 console.log(`\nglobe angle spread across refresh rates: ${tSpread.toFixed(6)} rad`);
-console.log(`cluster offset spread across refresh rates: ${cSpread.toFixed(6)} px`);
 
-const ok = tSpread < 0.01 && cSpread < 0.5;
+const ok = tSpread < 0.01;
 console.log(
   `\n${ok ? "PASS" : "FAIL"} — motion is ${ok ? "" : "NOT "}independent of refresh rate`,
 );

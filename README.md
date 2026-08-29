@@ -47,18 +47,6 @@ Swap it for `#4d7cfe` or `#ff5a1f` and the whole site follows — caret, hover s
 
 Text colors are `--ink` and `--ink-dim`. `--rule` is for hairlines only; it does not have enough contrast to be used as a text color.
 
-## Skill icons
-
-`src/components/skills/icon-paths.ts` is generated — don't hand-edit it.
-
-```bash
-node scripts/gen-icons.mjs
-```
-
-The icon list lives in `scripts/gen-icons.mjs`. Most marks come from the `simple-icons` devDependency; Java, AWS, OpenAI, and Twilio were dropped from current releases over trademark policy, so those four are pinned in `scripts/legacy-icons.json`.
-
-Brands whose real color is near-black (Next.js, Express, Vercel, GitHub) carry a `hex` override so they stay visible against the dark ground.
-
 ## The wordmark
 
 figlet **slant** rendering of `ar13.dev`, five rows of exactly 38 columns, in `AsciiWordmark.tsx`. Stored as plain strings with `\` doubled — deliberately not `String.raw`, because row 3 contains a backtick and escaping one inside a raw template leaves the backslash in the output. Trailing spaces are load-bearing.
@@ -108,12 +96,6 @@ Real geography rather than hand-drawn continents, because eyeballed coastlines r
 
 Move the pin by editing `MARKER` in `globe.ts`.
 
-## Notes on the cluster
-
-`SkillCluster` runs one `requestAnimationFrame` loop writing transforms directly to DOM nodes — deliberately not React state, which would re-render 60 times a second. Layout is a seeded phyllotaxis spiral computed at module load so server and client produce identical markup.
-
-It skips all work when scrolled off-screen, when hidden below the `sm` breakpoint, and when the user prefers reduced motion. Below `sm` the same 30 technologies render as a plain list instead.
-
 ## Scroll spy
 
 `useActiveSection` drives the amber underline in the nav. The decision logic is a pure exported function, `pickActive`, tested headlessly:
@@ -131,7 +113,6 @@ It uses scroll events rather than `IntersectionObserver` mainly for the bottom-o
 All motion is expressed in real time, never per frame. Per-frame constants make speed a function of the display — the hero originally spun 2.5x too fast on a 120Hz panel and nearly 3x on a 165Hz one.
 
 - **Globe**: radians per *second*, with the cursor lean on exponential smoothing (unconditionally stable, frame-rate independent by construction).
-- **Cluster**: springs step on a fixed 1/60s accumulator, so 120Hz runs one step every other frame rather than one per frame.
 
 ```bash
 node scripts/motion-check.mjs   # asserts identical motion at 60/90/120/144/165Hz
@@ -149,7 +130,7 @@ The in-editor browser preview does **not** composite frames, and as a result the
 | `scroll` events | no |
 | `matchMedia` | yes |
 
-So the globe's rotation, the skill-cluster drift, the nav underline, and the header's scroll border cannot be confirmed there — they need a real browser. Anything sizing- or correctness-critical is therefore built on CSS or `matchMedia` rather than on an observer, and the logic behind the rest is extracted into pure functions with headless checks (`scripts/*-check.mts`).
+So the globe's rotation, the nav underline, and the header's scroll border cannot be confirmed there — they need a real browser. Anything sizing- or correctness-critical is therefore built on CSS or `matchMedia` rather than on an observer, and the logic behind the rest is extracted into pure functions with headless checks (`scripts/*-check.mts`).
 
 ## Before going live
 

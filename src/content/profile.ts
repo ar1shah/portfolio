@@ -18,7 +18,7 @@ export const profile = {
   introParagraphs: [
     "hi!",
     "I'm a software engineer and Computer Science student at the University of Central Florida, focused on building tools that solve real problems.",
-    "When I'm not programming, you'll probably find me traveling the world, cooking a new recipe, or training MMA.",
+    "When I'm not programming, you'll probably find me side-questing, traveling the world, or training in MMA.",
   ],
 
   // Rendered in amber inside the terminal panel — the one accent phrase

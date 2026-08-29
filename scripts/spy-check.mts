@@ -1,6 +1,6 @@
 import { pickActive, ACTIVE_LINE } from "../src/hooks/useActiveSection.ts";
 
-const ids = ["about", "projects", "experience", "skills"];
+const ids = ["about", "projects", "experience"];
 let pass = 0;
 let fail = 0;
 
@@ -17,14 +17,15 @@ function t(name: string, tops: number[], atBottom: boolean, expect: string) {
 }
 
 console.log(`-- free scrolling (ACTIVE_LINE=${ACTIVE_LINE}) --`);
-t("at page top", [0, 900, 1900, 2800], false, "about");
-t("about still above the line", [-50, 700, 1700, 2600], false, "about");
-t("projects exactly on the line", [-800, ACTIVE_LINE, 1100, 2000], false, "projects");
-t("projects one px below line", [-800, ACTIVE_LINE + 1, 1100, 2000], false, "about");
-t("experience current", [-2853, -1781, -740, 208], false, "experience");
-t("skills current", [-3000, -2000, -1000, 40], false, "skills");
-t("bottom of page wins", [-3000, -2000, -1000, 500], true, "skills");
-t("missing section (Infinity)", [0, Infinity, Infinity, Infinity], false, "about");
+t("at page top", [0, 900, 1900], false, "about");
+t("about still above the line", [-50, 700, 1700], false, "about");
+t("projects exactly on the line", [-800, ACTIVE_LINE, 1100], false, "projects");
+t("projects one px below line", [-800, ACTIVE_LINE + 1, 1100], false, "about");
+t("experience current", [-2853, -1781, -740], false, "experience");
+// experience's top has not crossed the line yet, so the free-scrolling pick
+// would be "projects" — atBottom must override that to the last section.
+t("bottom of page wins", [-2853, -1781, 900], true, "experience");
+t("missing section (Infinity)", [0, Infinity, Infinity], false, "about");
 
 // Regression: clicking a nav item must underline THAT item.
 //
@@ -35,10 +36,9 @@ t("missing section (Infinity)", [0, Infinity, Infinity, Infinity], false, "about
 const ANCHOR = 112;
 
 console.log(`\n-- anchor jumps (section lands at ${ANCHOR}px) --`);
-t("clicked about", [ANCHOR, 1000, 2000, 3000], false, "about");
-t("clicked projects", [-900, ANCHOR, 1000, 2000], false, "projects");
-t("clicked experience", [-1900, -900, ANCHOR, 1000], false, "experience");
-t("clicked skills", [-2900, -1900, -900, ANCHOR], false, "skills");
+t("clicked about", [ANCHOR, 1000, 2000], false, "about");
+t("clicked projects", [-900, ANCHOR, 1000], false, "projects");
+t("clicked experience", [-1900, -900, ANCHOR], false, "experience");
 
 // The invariant behind all four cases above. This is what actually broke:
 // ACTIVE_LINE was 96 while targets landed at 208, so every clicked section
