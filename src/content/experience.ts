@@ -11,17 +11,17 @@ export type Role = {
 
 export const experience: Role[] = [
   {
-    company: "Delta Group Enterprises",
+    company: "Blackridge North",
     title: "Fullstack Software Developer, Contract",
     start: "Aug 2025",
     end: "Jun 2026",
-    location: "Orlando, FL",
+    location: "New York, NY",
     kind: "work",
     bullets: [
-      "Customized and deployed a white-labeled CRM to run core operations for a wholesale distribution client.",
-      "Built a GPT-5-powered chatbot with SMS, cutting manual response time by 40%.",
-      "Designed two-way SMS workflows on the Twilio API across 1,200+ monthly customer interactions.",
-      "Shipped continuous feature work against requirements that moved as the business did.",
+      "Customized and deployed a white-labeled CRM system to manage core business operations for a wholesale distribution client.",
+      "Built role-based dashboards and reporting in the CRM so managers could track orders, inventory, and customer activity without engineering support.",
+      "Cut manual response time by 40% by architecting a GPT-5-powered SMS chatbot with CRM-backed tool calling, guardrailed prompts, and human-handoff escalation.",
+      "Designed automated communication workflows using Twilio's API, enabling seamless two-way SMS messaging across 1,200+ monthly customer interactions.",
     ],
   },
   {
