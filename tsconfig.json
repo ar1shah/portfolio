@@ -9,12 +9,6 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
-    // src/components/about/commands.ts imports its content with explicit
-    // .ts extensions so scripts/term-check.mts can load the real module
-    // under `node --experimental-strip-types`, which resolves neither the
-    // @/ alias nor extensionless specifiers. Safe here because noEmit is
-    // on — nothing rewrites these paths on the way out.
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",

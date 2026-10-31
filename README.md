@@ -19,8 +19,6 @@ Everything you'd want to change lives in `src/content/`. You should not need to 
 | `experience.ts` | Jobs and education for the timeline |
 | `photos.ts` | Hero photo + lightbox carousel |
 
-Terminal commands are the one exception: they live in `src/components/about/commands.ts`, because each one is a small formatter over the content above rather than copy on its own. The reply text sits next to the command it belongs to.
-
 ### Swapping in real photos
 
 Drop files into `public/photos/`, then point `photos.ts` at them:
@@ -110,35 +108,6 @@ It uses scroll events rather than `IntersectionObserver` mainly for the bottom-o
 
 **One invariant matters here.** Anchor targets land at the `scroll-mt-28` (112px) on each section, and `ACTIVE_LINE` must sit *below* that. If it sits above, a clicked section lands past the line, fails the test, and the previous section keeps the underline — every nav item highlights the one before it. Do not add a `scroll-padding-top` on `<html>`: it stacks with `scroll-mt` and pushes targets to the sum. `spy-check.mts` asserts the invariant.
 
-## The terminal
-
-The About panel types its intro on scroll, then hands you a live prompt.
-`help` lists what it takes.
-
-Commands live in `src/components/about/commands.ts` and are pure — a
-function of their arguments and the panel's column count, with no React,
-no DOM and no clock. That is what makes them checkable headlessly:
-
-```bash
-node --experimental-strip-types scripts/term-check.mts
-```
-
-**The width assertion is the point of that check.** The panel sizes its
-text with `clamp(10px, 100cqw / (cols * 0.6), 14px)`, which only ever
-*shrinks* to avoid overflow and then stops. A row wider than `cols` (40
-mobile, 52 desktop) has no way to fit and simply runs off the side, so
-every command is run at both widths and every printed row is measured.
-Keep new output inside the budget, or wrap it with the `prose` helper.
-
-Two smaller things worth knowing before editing it:
-
-- `useTypedLines` latches `done` permanently, so it cannot drive a REPL.
-  It is only ever fed the intro; command output prints instantly, which
-  is a deliberate choice as much as a constraint.
-- The scrollback stores the *command*, not its rows, and re-renders it at
-  the current width. Output printed at 52 columns therefore re-wraps
-  instead of overflowing when the window narrows past `lg`.
-
 ## Frame-rate independence
 
 All motion is expressed in real time, never per frame. Per-frame constants make speed a function of the display — the hero originally spun 2.5x too fast on a 120Hz panel and nearly 3x on a 165Hz one.
@@ -159,16 +128,7 @@ The in-editor browser preview does **not** composite frames, and as a result the
 | `ResizeObserver` | no |
 | `IntersectionObserver` | no |
 | `scroll` events | no |
-| `resize` events | no |
-| `matchMedia` (reading `.matches`) | yes |
-| `matchMedia` `change` events | no |
-
-The `matchMedia` split matters: `.matches` reads correctly on load, so a
-reload at each width tests the right branch, but changing the preview's
-viewport fires neither `resize` nor a `change` event. Anything that is
-supposed to *react* to crossing a breakpoint — the terminal swapping
-between 40 and 52 columns, say — looks frozen there and has to be
-confirmed in a real browser.
+| `matchMedia` | yes |
 
 So the globe's rotation, the nav underline, and the header's scroll border cannot be confirmed there — they need a real browser. Anything sizing- or correctness-critical is therefore built on CSS or `matchMedia` rather than on an observer, and the logic behind the rest is extracted into pure functions with headless checks (`scripts/*-check.mts`).
 

@@ -1,11 +1,4 @@
-export type Segment = {
-  text: string;
-  accent: boolean;
-  /** Rendered in --ink-dim. Hints, labels, chrome — never body copy. */
-  dim?: boolean;
-  /** Renders the run as a link. Absolute URLs open in a new tab. */
-  href?: string;
-};
+export type Segment = { text: string; accent: boolean };
 
 /**
  * Greedy word wrap to `cols` columns. `atomic`, if given, is treated as a

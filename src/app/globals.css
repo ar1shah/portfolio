@@ -87,35 +87,6 @@
   .hairline {
     border-top: 1px solid var(--rule);
   }
-
-  /* The terminal's scrollback region. A default scrollbar reads as
-     browser chrome intruding on a panel that is pretending to be a
-     shell, and `contain` stops a flick inside the panel from scrolling
-     the page once the scrollback hits its end. */
-  .term-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: var(--rule) transparent;
-    overscroll-behavior: contain;
-  }
-  .term-scroll::-webkit-scrollbar {
-    width: 6px;
-  }
-  .term-scroll::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .term-scroll::-webkit-scrollbar-thumb {
-    background: var(--rule);
-    border-radius: 3px;
-  }
-
-  /* The prompt's blinking accent caret shows where you are, but it is
-     not a focus ring — someone tabbing in needs one. The global ring
-     (2px, 3px offset) is too heavy for a single row inside the panel. */
-  .term-input:focus-visible {
-    outline: 1px solid var(--accent);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
 }
 
 /* ── motion ──────────────────────────────────────────────────────────
