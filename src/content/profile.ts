@@ -30,6 +30,16 @@ export const profile = {
 
   location: "Orlando, FL",
 
+  // Printed by the terminal's `skills` command, in this order. Grouped
+  // rather than one flat pile so the panel can label the rows. Drawn from
+  // what's actually shipped in `projects.ts` plus UCF coursework.
+  skills: {
+    languages: ["TypeScript", "JavaScript", "Go", "Python", "SQL"],
+    frontend: ["React", "Next.js", "Tailwind CSS"],
+    backend: ["Node.js", "PostgreSQL", "Supabase", "REST APIs"],
+    tools: ["Git", "GitHub Actions", "Linux", "systemd"],
+  },
+
   links: {
     github: "https://github.com/ar1shah",
     linkedin: "https://linkedin.com/in/arishah",
