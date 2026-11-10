@@ -1,7 +1,6 @@
 import { profile } from "@/content/profile";
 import { AsciiWordmark } from "./AsciiWordmark";
 import { ExternalLink } from "@/components/ui/ExternalLink";
-import { CopyLine } from "@/components/ui/CopyLine";
 import { BackToTop } from "@/components/ui/BackToTop";
 
 const ICON = {
@@ -51,14 +50,10 @@ export function Footer() {
   return (
     <footer className="mt-32 border-t border-rule">
       <div className="shell py-14">
-        {/* The SSH portfolio is the reason this site looks the way it does.
-            It gets the position above the fold of the footer. */}
-        <div className="flex flex-col items-start gap-3 pb-12">
-          <span className="chrome text-ink-dim">Also available without a browser</span>
-          <CopyLine value={profile.ssh} />
-        </div>
-
-        <div className="hairline pt-12 grid gap-10 md:grid-cols-[1fr_auto_1fr] md:items-center">
+        {/* No `hairline` here: this is the first row in the footer, and the
+            footer's own top border already separates it from the page. A
+            second rule 14px below the first reads as a mistake. */}
+        <div className="grid gap-10 md:grid-cols-[1fr_auto_1fr] md:items-center">
           <div className="flex flex-col gap-4">
             <AsciiWordmark variant="footer" />
             <p className="font-mono text-[11px] text-ink-dim">

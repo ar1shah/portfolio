@@ -14,10 +14,11 @@ Everything you'd want to change lives in `src/content/`. You should not need to 
 
 | File | Holds |
 |---|---|
-| `profile.ts` | Name, email, the roles the hero cycles through, intro paragraph, social links, the SSH line |
+| `profile.ts` | Name, email, the roles the hero cycles through, intro paragraph, social links |
 | `projects.ts` | All six projects, plus the long-form case studies |
 | `experience.ts` | Jobs and education for the timeline |
 | `photos.ts` | Hero photo + lightbox carousel |
+| `thoughts/` | Blog posts — one Markdown file per post |
 
 ### Swapping in real photos
 
@@ -34,6 +35,27 @@ Project screenshots work the same way: files into `public/projects/`, paths into
 ### Adding a project
 
 Append to the `projects` array. Include a `caseStudy` object and it gets a `/projects/<slug>` page automatically — `generateStaticParams` picks it up at build. Leave `caseStudy` off and the card just links to GitHub.
+
+## Publishing a post
+
+1. Add `src/content/thoughts/<slug>.md` — the filename is the URL.
+2. Frontmatter is `title`, `date` (YYYY-MM-DD), `summary` (one sentence) and `draft`.
+3. Flip `draft: false` and commit; the index, the feed and the sitemap pick it up at build.
+
+Drafts render in `npm run dev` only. A production build leaves them out of the index, the feed, the sitemap and `generateStaticParams`, so the URL 404s — there is no secret preview link.
+
+Frontmatter is validated at build. A missing field, a date that isn't a real calendar date, or two files claiming one slug fails `npm run build` with the filename in the error.
+
+Markdown is GFM, rendered to HTML at build time by `src/lib/markdown.ts` — headings get ids, code blocks get highlighted, links that leave the site get `target="_blank"`. Raw HTML inside a post is dropped on purpose; adding it back needs `rehype-raw` **and** `rehype-sanitize` together. Images go in `public/thoughts/`.
+
+The nav link, the sitemap entries, the feed's `<link>` tag and indexing are all behind one flag:
+
+```ts
+// src/site.config.ts
+export const features = { thoughts: false };   // flip when 2–3 posts are live
+```
+
+The pages themselves always build, so `/thoughts` is previewable while the flag is off.
 
 ## Design tokens
 

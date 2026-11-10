@@ -3,6 +3,7 @@ import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/goo
 import { profile } from "@/content/profile";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { features, SITE_URL } from "@/site.config";
 import "./globals.css";
 
 const sans = Instrument_Sans({
@@ -26,10 +27,8 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
-const SITE = "https://ar13.dev";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${profile.name} — Software Engineer`,
     template: `%s — ${profile.handle}`,
@@ -44,23 +43,29 @@ export const metadata: Metadata = {
     "TypeScript",
     "Next.js",
   ],
-  authors: [{ name: profile.name, url: SITE }],
+  authors: [{ name: profile.name, url: SITE_URL }],
   creator: profile.name,
   openGraph: {
     type: "website",
-    url: SITE,
+    url: SITE_URL,
     siteName: profile.handle,
     title: `${profile.name} — Software Engineer`,
     description:
-      "Full-stack work in TypeScript, Next.js, and Postgres. Also reachable over SSH.",
+      "Full-stack work in TypeScript, Next.js, and Postgres.",
   },
   twitter: {
     card: "summary_large_image",
     title: `${profile.name} — Software Engineer`,
     description:
-      "Full-stack work in TypeScript, Next.js, and Postgres. Also reachable over SSH.",
+      "Full-stack work in TypeScript, Next.js, and Postgres.",
   },
-  alternates: { canonical: SITE },
+  alternates: {
+    canonical: SITE_URL,
+    // Feed autodiscovery — only once the blog is announced.
+    types: features.thoughts
+      ? { "application/rss+xml": `${SITE_URL}/thoughts/rss.xml` }
+      : undefined,
+  },
 };
 
 export const viewport: Viewport = {
