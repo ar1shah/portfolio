@@ -35,7 +35,4 @@ export const profile = {
     linkedin: "https://linkedin.com/in/arishah",
     resume: "/Ari_Shah_Resume.pdf",
   },
-
-  // The Go SSH portfolio. This is the footer's click-to-copy line.
-  ssh: "ssh ssh.ar13.dev -p 2222",
 } as const;

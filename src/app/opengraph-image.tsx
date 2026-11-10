@@ -58,7 +58,7 @@ export default function OpengraphImage() {
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "flex-start",
             alignItems: "flex-end",
             borderTop: "1px solid #24242a",
             paddingTop: 26,
@@ -66,7 +66,6 @@ export default function OpengraphImage() {
             color: "#8a8a85",
           }}
         >
-          <div>{profile.ssh}</div>
           <div>{profile.email}</div>
         </div>
       </div>

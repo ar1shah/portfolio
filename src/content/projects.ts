@@ -169,13 +169,61 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: "ssh-portfolio",
-    name: "SSH Portfolio",
+    slug: "cageops",
+    name: "CageOps",
     year: "2026",
     blurb:
-      "This portfolio, minus the browser. A Go SSH server that renders a terminal UI with ASCII art.",
-    tech: ["Go", "SSH", "Terminal UI", "systemd", "GitHub Actions"],
-    repo: "https://github.com/ar1shah/SSH-portfolio",
+      "A production-style ML platform that predicts UFC fight outcomes. The domain is the fights; the point is the infrastructure underneath.",
+    tech: ["Python", "FastAPI", "Postgres", "Redis", "LightGBM", "Docker"],
+    repo: "https://github.com/ar1shah/CageOps",
+    caseStudy: {
+      lede: "An ML platform that predicts UFC fight outcomes — ingestion pipeline, job queue, point-in-time features, model registry, serving API. The fights are the domain. The infrastructure is the project, and so is being honest about what the model is currently worth.",
+      sections: [
+        {
+          label: "The point",
+          body: [
+            "Most ML side projects are a notebook that reports a good number. I wanted the parts that come after the notebook: where the data comes from, how features get built without leaking the future, how a model version gets promoted, and how a prediction gets served, cached, and rate-limited.",
+            "The data pipeline, the model, and the prediction API are built. The first deploy, Kubernetes, and the retraining loop are scheduled and not written. The roadmap says which is which, because a half-built system that presents itself as finished is worse than one that names its phase.",
+          ],
+        },
+        {
+          label: "Features that cannot see the future",
+          body: [
+            "Every row of features is built only from fights strictly before the fight it describes — career, last-three and last-five rates, streaks, bio. Leakage tests guard that boundary, because the mistake is easy, silent, and flattering: a feature built from a fighter's full history makes a model look excellent right up until it meets a fight that has not happened yet.",
+            "Rebuilding the feature tables is one command, and training refuses to run against stale features rather than quietly producing a model nobody can reproduce.",
+          ],
+        },
+        {
+          label: "A source that says no",
+          body: [
+            "The canonical stats site sits behind a bot challenge. I did not bypass it. The resulting five-month gap is filled from English Wikipedia event articles instead — robots-compliant, results only, no per-round stats — with per-source keys so the canonical source always wins where both have a fight.",
+            "The cost is written down rather than papered over: those fights count toward a fighter's record but not toward the rate features, and the data-sources doc says exactly which fights are affected and why.",
+          ],
+        },
+        {
+          label: "The model loses to the betting favorite",
+          body: [
+            "LightGBM, time-based splits, scored against two baselines: an experience-and-ranking heuristic, and the betting favorite. It beats the heuristic. It loses to the favorite.",
+            "That sentence is in the README, not buried in a notebook. The odds baseline only covers 241 of 553 test fights, so it is not a complete verdict — but a model registry that enforces exactly one active version at the database level is worth building whether or not the model inside it is any good, and knowing this one is not good enough yet is the only thing that makes a next version mean anything.",
+          ],
+        },
+        {
+          label: "Workers cannot beat the rate limiter",
+          body: [
+            "I benchmarked ingestion across worker counts expecting to find a scaling curve. At the polite one-request-per-second interval there isn't one: one worker and four workers both took 680 seconds for 680 requests, and the workers spent 71% and 93% of their time respectively waiting for a limiter slot.",
+            "Relaxing the limiter to 100ms gives 2.78x at four workers — which is exactly the ceiling the arithmetic predicts, a 280ms cycle divided by a 100ms interval. So live ingestion throughput is set by politeness, not by worker count. One worker is enough. More workers only pay off for re-parsing from the page cache, which is most of why that cache exists. Every number was measured against a local replay server, never the real site, and the benchmarks doc leads with that caveat.",
+          ],
+        },
+        {
+          label: "Serving",
+          body: [
+            "Training and serving build their model input through one shared module, so the two cannot drift; the API image carries no training code and never installs LightGBM's toolchain. A model manager verifies the active bundle and hot-reloads it by polling, so promoting a version does not mean restarting the service.",
+            "Predictions are cached in Redis, keyed by model, feature build, input fingerprint, matchup, and date, and flipped exactly when the same fight is asked about the other way round. A token-bucket limiter runs per client. A k6 load test puts one process at 219 requests/second cold and 1,364 warm, which identifies the process — not the database pool — as the limit, and that is the number the next phase has to move.",
+          ],
+        },
+      ],
+      shots: [],
+    },
   },
   {
     slug: "resumemaxx",

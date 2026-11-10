@@ -87,6 +87,222 @@
   .hairline {
     border-top: 1px solid var(--rule);
   }
+
+  /* ── long-form post body ─────────────────────────────────────────────
+     Styles the HTML that lib/markdown.ts generates. Element selectors
+     rather than utilities, because that markup is a string and never
+     passes through JSX. Values are the ones already used for the
+     case-study prose — this is the same reading voice, not a new one.
+     ------------------------------------------------------------------ */
+  .post > * + * {
+    margin-top: 1.5rem;
+  }
+
+  .post > *:first-child {
+    margin-top: 0;
+  }
+
+  .post p,
+  .post li {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--ink-dim);
+  }
+
+  .post h2,
+  .post h3 {
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .post h2 {
+    margin-top: 3rem;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .post h3 {
+    margin-top: 2.25rem;
+    font-size: 1.25rem;
+    letter-spacing: -0.015em;
+  }
+
+  .post strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .post a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 3px;
+    transition: color 0.2s, text-decoration-color 0.2s;
+  }
+
+  .post a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+
+  .post ul,
+  .post ol {
+    padding-left: 1.25rem;
+  }
+
+  .post ul {
+    list-style: disc;
+  }
+
+  .post ol {
+    list-style: decimal;
+  }
+
+  .post li::marker {
+    color: var(--ink-dim);
+  }
+
+  .post li + li {
+    margin-top: 0.5rem;
+  }
+
+  /* The serif is loaded in layout.tsx and used nowhere else — a pull
+     quote is what it was loaded for. */
+  .post blockquote {
+    border-left: 1px solid var(--accent);
+    padding-left: 1.25rem;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.1875rem;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  .post blockquote p {
+    font: inherit;
+    color: inherit;
+  }
+
+  .post blockquote p + p {
+    margin-top: 1rem;
+  }
+
+  .post code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    color: var(--ink);
+    background: var(--raised);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.1em 0.35em;
+  }
+
+  .post pre {
+    overflow-x: auto;
+    background: var(--raised);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 1rem 1.125rem;
+  }
+
+  /* The <pre> owns the frame; the <code> inside it must not draw a second. */
+  .post pre code {
+    display: block;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .post img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+  }
+
+  .post hr {
+    margin-top: 3rem;
+    border: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* display:block so a wide table scrolls on a phone instead of forcing
+     the whole column wider than the screen. */
+  .post table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+
+  .post th,
+  .post td {
+    border-bottom: 1px solid var(--rule);
+    padding: 0.625rem 1rem 0.625rem 0;
+    text-align: left;
+    color: var(--ink-dim);
+    font-size: 0.9375rem;
+  }
+
+  .post th {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── code highlighting ───────────────────────────────────────────────
+     rehype-highlight emits highlight.js scopes. Three colours plus the
+     two inks, all already in :root — the palette does not grow for code.
+
+     Dotted scopes split into two classes and only the first is prefixed:
+     `title.function` becomes `class="hljs-title function_"`.
+     ------------------------------------------------------------------ */
+  .hljs-comment,
+  .hljs-quote,
+  .hljs-punctuation,
+  .hljs-meta {
+    color: var(--ink-dim);
+  }
+
+  .hljs-keyword,
+  .hljs-built_in,
+  .hljs-literal,
+  .hljs-type,
+  .hljs-selector-tag {
+    color: var(--accent);
+  }
+
+  .hljs-string,
+  .hljs-number,
+  .hljs-regexp,
+  .hljs-attr,
+  .hljs-symbol {
+    color: var(--dot-yellow);
+  }
+
+  .hljs-title,
+  .hljs-title.function_,
+  .hljs-title.class_,
+  .hljs-name,
+  .hljs-variable,
+  .hljs-params,
+  .hljs-attribute {
+    color: var(--ink);
+  }
+
+  .hljs-emphasis {
+    font-style: italic;
+  }
+
+  .hljs-strong {
+    font-weight: 600;
+  }
 }
 
 /* ── motion ──────────────────────────────────────────────────────────
